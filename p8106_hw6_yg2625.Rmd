@@ -29,7 +29,7 @@ arr_data = USArrests %>%
 hc.complete <- hclust(dist(arr_data), method = "complete")
 ```
 
-# (b) Cut the dendrogram at a height that results in three distinct clusters. Which states belong to which clusters?
+## (b) Cut the dendrogram at a height that results in three distinct clusters. Which states belong to which clusters?
 ```{r}
 # visualize dendrogram in 3 distinct clusters
 fviz_dend(hc.complete, k = 3,        
@@ -49,4 +49,34 @@ arr_data[ind3.complete == 2,] %>% row.names()
 arr_data[ind3.complete == 3,] %>% row.names()
 ```
 
-# (c) Hierarchically cluster the states using complete linkage and Euclidean distance, after scaling the variables to have standard deviation one.
+## (c) Hierarchically cluster the states using complete linkage and Euclidean distance, after scaling the variables to have standard deviation one.
+```{r}
+# fit hierarchical cluster with standardized variables
+hc.complete_std <- hclust(dist(scale(arr_data)), method = "complete")
+
+# visualize dendrogram
+fviz_dend(hc.complete_std, k = 3,        
+          cex = 0.3, 
+          palette = "jco", 
+          color_labels_by_k = TRUE,
+          rect = TRUE, rect_fill = TRUE, rect_border = "jco",
+          labels_track_height = 2.5)
+
+# show the states in clusters
+ind3.complete_std <- cutree(hc.complete_std, 3)
+# name of states in cluster 1
+arr_data[ind3.complete_std == 1,] %>% row.names()
+# name of states in cluster 2
+arr_data[ind3.complete_std == 2,] %>% row.names()
+# name of states in cluster 3
+arr_data[ind3.complete_std == 3,] %>% row.names()
+
+```
+
+## (d) What effect does scaling the variables have on the hierarchical clustering obtained? In your opinion, should the variables be scaled before the inter-observation dissimilarities are computed?
+
+Scaling the variables generates different hierarchical results and more states fall into the 1st cluster. I belive we should scale the variables before the inter-observation dissimilarities are computed, for the reason that the magnitudes and units for some variables in the orignial arrest data is different(e.g. murder and urban_pop), and scaling the variables could generate variables with same unit to ensure the variables are clustered under the same measurements.
+
+
+
+
